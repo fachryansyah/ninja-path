@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ninja Path</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.1/fabric.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>The Ninja Path</h2>
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label>Size Of Maps</label>
+                        <input id="size" type="number" class="form-control" value="6">
+                    </div>
+                    <div class="form-group col">
+                        <label>Array of wall (coma sperator)</label>
+                        <input id="wall" type="text" class="form-control" value="8,9,10">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label>Start</label>
+                        <input id="start" type="number" class="form-control" value="2">
+                    </div>
+                    <div class="form-group col">
+                        <label>End</label>
+                        <input id="end" type="number" class="form-control" value="11">
+                    </div>
+                </div>
+                <button id="btnStart" class="btn btn-primary btn-block">Start find the best way</button>
+            </div>
+        </div>
+        <div class="row mt-4 mb-5">
+            <div class="col-md-6 col-12">
+                <canvas style="border: solid 1px #000000;" id="map" width="500" height="500"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <script src="map.js"></script>
+    <script>
+        let btnStart = document.getElementById("btnStart")
+        btnStart.addEventListener("click", () => {
+            drawMap()
+        })
+    </script>
+</body>
+</html>
