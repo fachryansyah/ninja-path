@@ -12,10 +12,13 @@ let mapCol = 0
 let mapRow = 1
 
 let way = []
+let stackLeft = [1]
+let stackRight = []
 let mappedWay = []
 
 const drawMap = async () => {
     await resetMap()
+
     for(let i = 1; i < formSize.value * formSize.value + 1; i++){
         if (mapCol == formSize.value) {
             mapRow += 1
@@ -38,9 +41,22 @@ const drawMap = async () => {
             fontSize: 14
         }))
     }
+    createStackLevel()
     drawWall()
     drawLocation()
-    findBestWay()
+    getMappedWay()
+}
+
+const createStackLevel = () => {
+    let size = parseInt(formSize.value);
+
+    for (let i = 1; i < size + 1; i++) {
+        stackRight.push(i * 6)
+    }
+
+    for (let i = 1; i < size; i++) {
+        stackLeft.push(i*6 + 1)
+    }
 }
 
 const drawWall = () => {
@@ -120,15 +136,19 @@ drawLocation = () => {
     }
 }
 
-const findBestWay = () => {
-    way.push(start)
-    // for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
-    // }
-    console.log(findStep(15))
+const getMappedWay = () => {
+    
+    for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
+        mappedWay.push(findStep(i))
+    }
+    mappedWay.forEach((item, index) => {
+        console.log(index+1,item)
+    })
 }
 
 const findStep = (num) => {
-    console.log("find step way")
+    let step = []
+
     if (num < parseInt(formSize.value) * parseInt(formSize.value)) {
         for (let i = 1; i < parseInt(formSize.value) * parseInt(formSize.value) + 1; i++) {
             if (!wall.includes(i)) {
@@ -138,26 +158,38 @@ const findStep = (num) => {
                 let bottom = num + parseInt(formSize.value);
 
                 if (i == right) {
-                    mappedWay.push(right)
+                    if (!wall.includes(right.toString())) {
+                        if (stackLeft.includes(right)) {
+                            right = right + parseInt(formSize.value)
+                        }else{
+                            step.push(right)
+                        }
+                    }
                 }
                 if (i == left) {
-                    mappedWay.push(left)
+                    if (!wall.includes(left.toString())) {
+                        if (stackRight.includes(left)) {
+                            left = left - parseInt(formSize.value)
+                        }else{
+                            step.push(left)
+                        }
+                    }
                 }
 
                 if (i == top) {
                     if (!wall.includes(top.toString())) {
-                        mappedWay.push(top)
+                        step.push(top)
                     }
                 }
                 if (i == bottom) {
                     if (!wall.includes(bottom.toString())) {
-                        mappedWay.push(bottom)
+                        step.push(bottom)
                     }
                 }
             }
         }
     }
-    return mappedWay
+    return step
 }
 
 const drawWay = () => {
