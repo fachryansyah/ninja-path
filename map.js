@@ -4,7 +4,7 @@ let formStart = document.getElementById("start")
 let formEnd = document.getElementById("end")
 
 let map = new fabric.Canvas('map')
-let wall = 0
+let wall = []
 let start = 0
 let end = 0
 
@@ -122,28 +122,42 @@ drawLocation = () => {
 
 const findBestWay = () => {
     way.push(start)
-    for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
-        
-    }
+    // for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
+    // }
+    console.log(findStep(15))
 }
 
-const findStep = () => {
-    console.log("find best way")
-    if (start < parseInt(formSize.value)) {
-        for (let i = 1; i < parseInt(formSize.value) + 1; i++) {
+const findStep = (num) => {
+    console.log("find step way")
+    if (num < parseInt(formSize.value) * parseInt(formSize.value)) {
+        for (let i = 1; i < parseInt(formSize.value) * parseInt(formSize.value) + 1; i++) {
             if (!wall.includes(i)) {
-                let right = start + 1;
-                let left = start - 1;
+                let right = num + 1
+                let left = num - 1
+                let top = num - parseInt(formSize.value)
+                let bottom = num + parseInt(formSize.value);
+
                 if (i == right) {
-                    way.push(right)
+                    mappedWay.push(right)
                 }
                 if (i == left) {
-                    way.push(left)
+                    mappedWay.push(left)
+                }
+
+                if (i == top) {
+                    if (!wall.includes(top.toString())) {
+                        mappedWay.push(top)
+                    }
+                }
+                if (i == bottom) {
+                    if (!wall.includes(bottom.toString())) {
+                        mappedWay.push(bottom)
+                    }
                 }
             }
         }
     }
-    console.log(way)
+    return mappedWay
 }
 
 const drawWay = () => {
@@ -180,4 +194,13 @@ const resetMap = () => {
     map.clear()
     mapCol = 0
     mapRow = 1
+}
+
+const lockObject = () => {
+    map.getObjects().map(function(item, index) {
+        map.item(index).lockMovementY = true;
+        map.item(index).lockMovementX = true;
+        map.item(index).lockScalingX = true;
+        map.item(index).lockRotation = true;
+    });
 }
