@@ -19,11 +19,11 @@ let mappedWay = []
 const drawMap = async () => {
     await resetMap()
 
-    for(let i = 1; i < formSize.value * formSize.value + 1; i++){
+    for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
         if (mapCol == formSize.value) {
             mapRow += 1
             mapCol = 1
-        }else{
+        } else {
             mapCol += 1
         }
 
@@ -56,7 +56,7 @@ const createStackLevel = () => {
     }
 
     for (let i = 1; i < size; i++) {
-        stackLeft.push(i*6 + 1)
+        stackLeft.push(i * 6 + 1)
     }
 }
 
@@ -64,11 +64,11 @@ const drawWall = () => {
     mapCol = 0
     mapRow = 1
     wall = formWall.value.split(",")
-    for(let i = 1; i < formSize.value * formSize.value + 1; i++){
+    for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
         if (mapCol == formSize.value) {
             mapRow += 1
             mapCol = 1
-        }else{
+        } else {
             mapCol += 1
         }
 
@@ -80,7 +80,7 @@ const drawWall = () => {
                 width: 30,
                 height: 30
             }))
-    
+
             map.add(new fabric.Text(i.toString(), {
                 left: mapCol * 30 + 3,
                 top: mapRow * 30 + 3,
@@ -95,11 +95,11 @@ const drawLocation = () => {
     mapRow = 1
     start = parseInt(formStart.value)
     end = parseInt(formEnd.value)
-    for(let i = 1; i < formSize.value * formSize.value + 1; i++){
+    for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
         if (mapCol == formSize.value) {
             mapRow += 1
             mapCol = 1
-        }else{
+        } else {
             mapCol += 1
         }
 
@@ -111,7 +111,7 @@ const drawLocation = () => {
                 width: 30,
                 height: 30
             }))
-    
+
             map.add(new fabric.Text(i.toString(), {
                 left: mapCol * 30 + 3,
                 top: mapRow * 30 + 3,
@@ -127,7 +127,7 @@ const drawLocation = () => {
                 width: 30,
                 height: 30
             }))
-    
+
             map.add(new fabric.Text(i.toString(), {
                 left: mapCol * 30 + 3,
                 top: mapRow * 30 + 3,
@@ -138,12 +138,12 @@ const drawLocation = () => {
 }
 
 const getMappedWay = () => {
-    
+
     for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
         mappedWay.push(findStep(i))
     }
     mappedWay.forEach((item, index) => {
-        console.log(index+1,item)
+        console.log(index + 1, item)
     })
 }
 
@@ -162,7 +162,7 @@ const findStep = (num) => {
                     if (!wall.includes(right.toString())) {
                         if (stackLeft.includes(right)) {
                             right = right + parseInt(formSize.value)
-                        }else{
+                        } else {
                             step.push(right)
                         }
                     }
@@ -171,7 +171,7 @@ const findStep = (num) => {
                     if (!wall.includes(left.toString())) {
                         if (stackRight.includes(left)) {
                             left = left - parseInt(formSize.value)
-                        }else{
+                        } else {
                             step.push(left)
                         }
                     }
@@ -195,26 +195,57 @@ const findStep = (num) => {
 
 const findBestWay = (point) => {
 
-    let tempPoint = mappedWay[point-1]
+    let tempPoint = mappedWay[point - 1]
     // console.log(tempPoint[tempPoint.length - 1])
     console.log(tempPoint)
     if (tempPoint.includes(end)) {
-        // console.log(way)
+        console.log(way)
         drawWay()
         return
     }
-    way.push(tempPoint[tempPoint.length - 1])
-    findBestWay(tempPoint[tempPoint.length - 1])
+    let goTo = tempPoint.indexOf(findNearestTarget(tempPoint, end))
+    // console.log(findNearestTarget(tempPoint, end))
+    console.log(goTo)
+    way.push(tempPoint[goTo])
+    findBestWay(tempPoint[goTo])
+}
+
+const findNearestTarget = (points, target) => {
+
+    var i = 0, closest, closestDiff, currentDiff;
+    if(points.length)
+    {
+        closest = points[0];
+        for(i;i<points.length;i++)
+        {           
+            closestDiff = Math.abs(target - closest);
+            currentDiff = Math.abs(target - points[i]);
+            if(currentDiff < closestDiff)
+            {
+                closest = points[i];
+            }
+            closestDiff = null;
+            currentDiff = null;
+        }
+        //returns first element that is closest to number
+        return closest;
+    }
+    //no length
+    return false;
+
+    // return points.reduce(function(prev, curr) {
+    //     return (Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev);
+    // });
 }
 
 const drawWay = () => {
     mapCol = 0
     mapRow = 1
-    for(let i = 1; i < formSize.value * formSize.value + 1; i++){
+    for (let i = 1; i < formSize.value * formSize.value + 1; i++) {
         if (mapCol == formSize.value) {
             mapRow += 1
             mapCol = 1
-        }else{
+        } else {
             mapCol += 1
         }
 
@@ -226,7 +257,7 @@ const drawWay = () => {
                 width: 30,
                 height: 30
             }))
-    
+
             map.add(new fabric.Text(i.toString(), {
                 left: mapCol * 30 + 3,
                 top: mapRow * 30 + 3,
@@ -238,12 +269,21 @@ const drawWay = () => {
 
 const resetMap = () => {
     map.clear()
+    wall = []
+    start = 0
+    end = 0
+
     mapCol = 0
     mapRow = 1
+
+    way = []
+    stackLeft = [1]
+    stackRight = []
+    mappedWay = []
 }
 
 const lockObject = () => {
-    map.getObjects().map(function(item, index) {
+    map.getObjects().map(function (item, index) {
         map.item(index).lockMovementY = true;
         map.item(index).lockMovementX = true;
         map.item(index).lockScalingX = true;
