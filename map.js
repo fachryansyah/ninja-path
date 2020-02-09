@@ -45,6 +45,7 @@ const drawMap = async () => {
     drawWall()
     drawLocation()
     getMappedWay()
+    findBestWay(start)
 }
 
 const createStackLevel = () => {
@@ -89,7 +90,7 @@ const drawWall = () => {
     }
 }
 
-drawLocation = () => {
+const drawLocation = () => {
     mapCol = 0
     mapRow = 1
     start = parseInt(formStart.value)
@@ -192,10 +193,23 @@ const findStep = (num) => {
     return step
 }
 
+const findBestWay = (point) => {
+
+    let tempPoint = mappedWay[point-1]
+    // console.log(tempPoint[tempPoint.length - 1])
+    console.log(tempPoint)
+    if (tempPoint.includes(end)) {
+        // console.log(way)
+        drawWay()
+        return
+    }
+    way.push(tempPoint[tempPoint.length - 1])
+    findBestWay(tempPoint[tempPoint.length - 1])
+}
+
 const drawWay = () => {
     mapCol = 0
     mapRow = 1
-    way = [3,4,5]
     for(let i = 1; i < formSize.value * formSize.value + 1; i++){
         if (mapCol == formSize.value) {
             mapRow += 1
