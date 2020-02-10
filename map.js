@@ -265,6 +265,7 @@ const drawWay = () => {
             }))
         }
     }
+    lockObject()
 }
 
 const resetMap = () => {
